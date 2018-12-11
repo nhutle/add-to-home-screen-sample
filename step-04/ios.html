@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>Add to Homescreen</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  
+  
+  <meta name="apple-mobile-web-app-title" content="Test name 2">
+  
+  <link rel="apple-touch-icon" href="touch-icon-iphone.png" >
+  <link rel="apple-touch-icon" sizes="76x76" href="http://placekitten.com/76/76">
+  <link rel="apple-touch-icon" sizes="120x120" href="http://placekitten.com/120/120">
+  <link rel="apple-touch-icon" sizes="152x152" href="http://placekitten.com/152/152">
+
+  <meta name="msapplication-starturl" content="latest?launchedTest" />
+</head>
+<body>
+  <script>
+    (function() {
+      var startUrlEl = document.querySelector("meta[name=msapplication-starturl]");
+      if(!!startUrlEl === true && navigator.standalone === true) {
+        var lastUrl = localStorage["navigate"];
+        history.pushState({launched: (!!lastUrl == false && history.length === 1)}, undefined, lastUrl || startUrlEl.content);
+        localStorage.removeItem("navigate");
+        
+        // Intercept all anchor clicks and keep fullscreen if in origin
+        document.addEventListener("click", function(e) {
+          var target = e.target;
+          if(target.tagName === 'A') {
+            
+            var href = target.getAttribute("href");
+            var linkedUrl = new URL(target.href);
+
+            if(linkedUrl.origin === location.origin) {
+              e.preventDefault();
+              location.href = href;
+            }
+            else {
+              // When we are navigating away store the state so we can resume.
+              localStorage["navigate"] = location.href;
+            }
+          }
+        });
+      }
+    })();
+    
+    
+  </script>
+  
+  <h1>This is a test</h1>
+  
+  <a href="#1">test 1</a>
+  <a href="?1">test 2</a>
+  <a href="3">test 3</a>
+  <a href="#">test 4</a>
+  <a href="https://paul.kinlan.me/">External Test 5</a>
+  
+</body>
+</html>
